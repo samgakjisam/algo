@@ -14,6 +14,11 @@
         <img src="https://avatars.githubusercontent.com/calendar2" width="130px;" alt="">
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/moeun12">
+        <img src="https://avatars.githubusercontent.com/moeun12" width="130px;" alt="moeun_profile">
+      </a>
+    </td>
   </tr>
   <tr>
     <td align="center">
@@ -26,6 +31,11 @@
         <b>calendar2</b>
       </a>
     </td>
+     <td align="center">
+      <a href="https://github.com/moeun12">
+        <b>moeun12</b>
+      </a>
+    </td>
   </tr>
   <tr> 
     <td align="center">
@@ -35,6 +45,9 @@
     <td align="center">
       <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white"><br/>
       <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+    </td>
+    <td align="center">
+      <img src="https://img.shields.io/badge/C++-007396?style=for-the-badge&logo=c++&logoColor=white">
     </td>
   </tr>
 </table>
