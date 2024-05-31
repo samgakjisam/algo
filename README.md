@@ -19,6 +19,11 @@
         <img src="https://avatars.githubusercontent.com/moeun12" width="130px;" alt="moeun_profile">
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/badacura">
+        <img src="https://avatars.githubusercontent.com/badacura" width="130px;" alt="kiyong_profile">
+      </a>
+    </td>
   </tr>
   <tr>
     <td align="center">
