@@ -24,6 +24,11 @@
         <img src="https://avatars.githubusercontent.com/badacura" width="130px;" alt="kiyong_profile">
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/syhuni">
+        <img src="https://avatars.githubusercontent.com/syhuni" width="130px;" alt="syhuni_profile">
+      </a>
+    </td>
   </tr>
   <tr>
     <td align="center">
@@ -46,6 +51,11 @@
         <b>badacura</b>
       </a>
     </td>
+    <td align="center">
+      <a href="https://github.com/syhuni">
+        <b>syhuni</b>
+      </a>
+    </td>
   </tr>
   <tr> 
     <td align="center">
@@ -61,6 +71,9 @@
     </td>
     <td align="center">
       <img src="https://img.shields.io/badge/Java-007396?style=for-the-badge&logo=java&logoColor=white"><br/>
+      <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
+    </td>
+    <td align="center">
       <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white">
     </td>
   </tr>
