@@ -2,127 +2,116 @@ import java.util.*;
 
 class Solution {
     static int[] answer = {0, 0, 0, 0};
-    static int max_node;
+    static int max_node = 0;
     static boolean[] visited;
+    static int[][] io_info;
+    static int total_graph = 0;
+    static ArrayList<Queue<Integer>> list = new ArrayList<>();
     
     public int[] solution(int[][] edges) {
-        // 간선 오름차순 정렬
-        Arrays.sort(edges, (o1, o2) -> o1[1] == o2[1] ? o1[0] - o2[0] : o1[1] - o2[1]);
-        
         // 정점 최댓값
-        max_node = edges[edges.length-1][1];
         for (int i = 0; i < edges.length; i++) {
             max_node = Math.max(max_node, edges[i][0]);
+            max_node = Math.max(max_node, edges[i][1]);
         }
         
-        // 정점 중 새롭게 추가가 가능한 정점 판별(false가 새롭게 추가된 정점 후보)
-        boolean[] nodes = new boolean[max_node+1];
-        visited = new boolean[max_node+1];
-        nodes[0] = visited[0] = true;
-        for (int i = 0; i < edges.length; i++) {
-            nodes[edges[i][1]] = true;
-        }
-        
-        // 그래프 찾기
-        for (int i = 1; i <= max_node; i++) {
-            if (!nodes[i]) {
-                graph(i, edges);
-            }
-        }
-        
-        return answer;
-    }
-    
-    static void graph(int node_num, int[][] edges) {
-        // 후보 정점을 제외한 각 정점의 io 갯수 파악
-        int[][] io_relation = new int[max_node+1][2];
-        ArrayList<Queue<Integer>> list = new ArrayList<>();
+        // 입출력 그래프 만들기
         for (int i = 0; i <= max_node; i++) {
             list.add(i, new LinkedList<>());
         }
         
+        // 정점 방문처리 초기 세팅
+        visited = new boolean[max_node+1];
+        for (int i = 0; i <= max_node; i++) {
+            visited[i] = true;
+        }
+        
         for (int i = 0; i < edges.length; i++) {
-            if (edges[i][0] != node_num && edges[i][1] != node_num) {
-                list.get(edges[i][0]).add(edges[i][1]);
-                io_relation[edges[i][0]][0]++;
-                io_relation[edges[i][1]][1]++;
-            }
+            visited[edges[i][0]] = false;
+            visited[edges[i][1]] = false;
         }
         
-        Stack<Integer> stack = new Stack<>();
-        // 후보 정점이 맞는지?
+        // 각 정점의 입,출력 갯수 파악
+        io_info = new int[max_node+1][2];
+        for (int i = 0; i < edges.length; i++) {
+            io_info[edges[i][0]][0]++;
+            io_info[edges[i][1]][1]++;
+            list.get(edges[i][0]).add(edges[i][1]);
+        }
+        
+        // 새롭게 추가된 정점
         for (int i = 1; i <= max_node; i++) {
-            if (io_relation[i][0] == 0 || io_relation[i][0] == 1) {
-                if (io_relation[i][1] >= 2) {
-                    return;
-                }
-            } else if (io_relation[i][0] == 2) {
-                if (io_relation[i][1] == 2) {
-                    stack.push(i);
-                } else {
-                    return;
-                }
+            if (io_info[i][0] >= 2 && io_info[i][1] == 0) {
+                answer[0] = i;
+                visited[i] = true;
+                total_graph = io_info[i][0];
             }
         }
-        answer[0] = node_num;
-        visited[node_num] = true;
         
-        // 8자 그래프 찾기
-        while (!stack.isEmpty()) {
-            int cur = stack.pop();
-            
-            while (true) {
-                cur = list.get(cur).poll();
-                if (visited[cur]) {
-                    break;
-                }
-                visited[cur] = true;
-            }
-            answer[3]++;
+        for (int n : list.get(answer[0])) {
+            io_info[n][1]--;
         }
         
-        // 막대 찾기
-        Queue<Integer> q = new LinkedList<>();
+        // 8자 그래프의 센터, 막대 그래프의 시작점
+        Queue<Integer> eight_q = new LinkedList<>();
+        Queue<Integer> line_q = new LinkedList<>();
         for (int i = 1; i <= max_node; i++) {
-            if (!visited[i] && io_relation[i][1] == 0) {
-                q.add(i);
+            if (io_info[i][0] == 2 && io_info[i][1] >= 2) {
+                int next = list.get(i).poll();
+                eight_q.add(next);
+                visited[next] = true;
+            } else if (io_info[i][0] == 1 && io_info[i][1] == 0) {
+                line_q.add(i);
                 visited[i] = true;
             }
         }
         
-        while (!q.isEmpty()) {
-            int cur = q.poll();
-            
-            while (true) {
-                if (list.get(cur).isEmpty()) {
-                    break;
-                } else {
-                    cur = list.get(cur).poll();
-                    visited[cur] = true;
-                }
-            }
-            answer[2]++;
+        // 그래프 찾기
+        while (!eight_q.isEmpty()) {
+            eight_search(eight_q.poll());
         }
         
-        // 도넛 찾기
+        while (!line_q.isEmpty()) {
+            line_search(line_q.poll());
+        }
+        
         for (int i = 1; i <= max_node; i++) {
-            if (!visited[i]) {
-                q.add(i);
-                visited[i] = true;
-                
-                while (!q.isEmpty()) {
-                    int cur = q.poll();
-                    
-                    while (true) {
-                        cur = list.get(cur).poll();
-                        if (visited[cur]) {
-                            break;
-                        }
-                        visited[cur] = true;
-                    }
-                    answer[1]++;
-                }
+            if (!visited[i] && io_info[i][0] == 0) {
+                answer[2]++;
             }
+        }
+        
+        answer[1] = total_graph - answer[2] - answer[3];
+        return answer;
+    }
+    
+    static void eight_search(int node) {
+        int next_node = list.get(node).poll();
+        visited[next_node] = true;
+        
+        while (true) {
+            if (list.get(next_node).isEmpty()) {
+                answer[3]++;
+                break;
+            }
+            
+            next_node = list.get(next_node).poll();
+            visited[next_node] = true;
+        }
+    }
+    
+    static void line_search(int node) {
+        int next_node = list.get(node).poll();
+        visited[next_node] = true;
+        
+        while (true) {
+            if (list.get(next_node).isEmpty()) {
+                answer[2]++;
+                break;
+            }
+            
+            next_node = list.get(next_node).poll();
+            visited[next_node] = true;
         }
     }
 }
